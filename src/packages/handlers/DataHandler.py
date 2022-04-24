@@ -11,30 +11,40 @@ class DataHandler():
         
     def __getRequiredData(self):
         # ---- IS ----
-        self.__getHtmlBySearchType("is")
+        gotContent=self.__getHtmlBySearchType("is")
+        if(not gotContent):
+            return
         price=DriverHandler.getPrice(self.driver, self.sym).replace(",","")
         interestExpenseNonOperating=DriverHandler.getValueFromStatement(self.driver, "Interest Expense Non Operating").replace(",","")
         taxProvision=DriverHandler.getValueFromStatement(self.driver, "Tax Provision").replace(",","")
         preTaxIncome=DriverHandler.getValueFromStatement(self.driver, "Pretax Income").replace(",","")
         
         # ---- BSS ----
-        self.__getHtmlBySearchType("bss")
+        gotContent=self.__getHtmlBySearchType("bss")
+        if(not gotContent):
+            return
         currentDebt=DriverHandler.getValueFromStatement(self.driver, "Current Debt", 2).replace(",","")
         longTermDebt=DriverHandler.getValueFromStatement(self.driver, "Long Term Debt", 2).replace(",","")
         cashAndEquivalents=DriverHandler.getValueFromStatement(self.driver, "Cash, Cash Equivalents & Short Term Investments", 2).replace(",","")
         shareIssued=DriverHandler.getValueFromStatement(self.driver, "Share Issued", 2).replace(",","")
         
         # ---- CFS ----
-        self.__getHtmlBySearchType("cfs")
+        gotContent=self.__getHtmlBySearchType("cfs")
+        if(not gotContent):
+            return
         freeCashFlow=DriverHandler.getValueFromStatement(self.driver, "Free Cash Flow").replace(",","")
         
         # ---- Analysis ----
-        self.__getHtmlBySearchType("analysis", clickExpandButton=False)
+        gotContent=self.__getHtmlBySearchType("analysis", clickExpandButton=False)
+        if(not gotContent):
+            return
         growthNextFiveYears=DriverHandler.getValueFromOther(self.driver, "Next 5 Years (per annum)")
         growthNextFiveYears=percetageStrToFloatStr(growthNextFiveYears)
         
         # ---- Statistics ----
-        self.__getHtmlBySearchType("stats", clickExpandButton=False)
+        gotContent=self.__getHtmlBySearchType("stats", clickExpandButton=False)
+        if(not gotContent):
+            return
         betaFiveYear=DriverHandler.getValueFromOther(self.driver, "Beta (5Y Monthly)")
         marketCap=DriverHandler.getValueFromOther(self.driver, "Market Cap (intraday)")
         if(marketCap.__contains__("T")):
@@ -47,7 +57,9 @@ class DataHandler():
             marketCap=str(float(marketCap[:marketCap.index("K")])*1000/1000 )
         
         # ---- US bond rates ----
-        self.__getHtmlBySearchType("bonds", clickExpandButton=False)
+        gotContent=self.__getHtmlBySearchType("bonds", clickExpandButton=False)
+        if(not gotContent):
+            return
         riskFree=DriverHandler.getValueFromTreasuryRates(self.driver, "^TNX")+"%"
         riskFree=percetageStrToFloatStr(riskFree)
         

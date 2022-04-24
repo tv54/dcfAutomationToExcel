@@ -1,6 +1,5 @@
 import os
 from time import sleep
-from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.firefox.service import Service as frfxService
@@ -35,19 +34,41 @@ class DriverHandler():
     @staticmethod
     def getHTML(driver, link, clickExpandButton=True):
         driver.get(link)
-        clickExpandButton and DriverHandler.clickExpandButton(driver)
+        if(clickExpandButton):
+            clickedButton=DriverHandler.clickExpandButton(driver)
+            if(not clickedButton):
+                clickedButton=DriverHandler.clickExpandButton(driver)
+                if(not clickedButton):
+                    return False
+            
         html = driver.execute_script("return document.body.innerHTML;")
-        return BeautifulSoup(html,"lxml")
+        return True
     
     @staticmethod
     def clickExpandButton(driver):
+        button=""
         sleep(0.5)
         try:
             button=driver.find_element(By.CLASS_NAME, value="expandPf")
         except:
             sleep(1)
-            button=driver.find_element(By.CLASS_NAME, value="expandPf")
+            try:
+                button=driver.find_element(By.CLASS_NAME, value="expandPf")
+            except:
+                sleep(1)
+                try:
+                    button=driver.find_element(By.CLASS_NAME, value="expandPf")
+                except:
+                    pass
+                
         button and button.text=="Expand All" and button.click()
+        try:
+            button=driver.find_element(By.CLASS_NAME, value="expandPf")
+            if(button.text=="Expand All"):
+                return False
+        except:
+            return False
+        return True
         
     @staticmethod
     def loopParentsUntilFound(elem, parentClass):

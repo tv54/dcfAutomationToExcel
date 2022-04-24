@@ -120,6 +120,7 @@ class ExcelHandler():
                 return self.saveWorkbook("./" + cts.OUTPUT_FOLDER + "/" + userIn)
             else:
                 return self.saveWorkbook(wbName)
+        handleInput(f"Excel guardado en {wbName}. Presionar una tecla para cerrar")
 
     def cellFormatNumber(cls, ws, cell, format="A"):
         match format.upper():
