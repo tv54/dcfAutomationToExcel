@@ -1,0 +1,6 @@
+recursive-include src/ *
+recursive-include src/packages *
+include main.py
+recursive-exclude output
+exclude setup.py
+global-exclude *.py[cod]
