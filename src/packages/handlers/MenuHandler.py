@@ -55,9 +55,9 @@ def __mainProgMenu():
         mktReturn=float(percetageStrToFloatStr(mktReturn))
         
     while(not outputExcelName):
-        outputExcelName=handleInput("Nombre del excel (enter: {}.xlsx): ".format(sym))
+        outputExcelName=handleInput("Nombre del excel (enter: {}_dcf.xlsx): ".format(sym))
         if(not outputExcelName):
-            outputExcelName="{}.xlsx".format(sym)
+            outputExcelName="{}_dcf.xlsx".format(sym)
         else:
             if(not outputExcelName.__contains__(".")):
                 outputExcelName += ".xlsx"

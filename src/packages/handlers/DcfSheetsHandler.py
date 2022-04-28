@@ -1,4 +1,6 @@
 from datetime import datetime
+from lib2to3.pgen2.driver import Driver
+from src.packages.handlers.DriverHandler import DriverHandler
 from src.packages.handlers.ExcelHandler import ExcelHandler
 from openpyxl.worksheet.dimensions import SheetFormatProperties, ColumnDimension
 
@@ -10,7 +12,7 @@ class DcfSheetsHandler(ExcelHandler):
         self.dv=dataValues
         
     def __projectedCashFlows(self):
-        ws=self.createSheet("CF proyectados")
+        ws=self.createSheet("CF proyectados", 1)
         ws.sheet_format=SheetFormatProperties(defaultColWidth=24.43)
         ws.column_dimensions["A"]=ColumnDimension(ws, width=3)
         
@@ -48,7 +50,7 @@ class DcfSheetsHandler(ExcelHandler):
         self.writeToRange(ws, "C12", "C15", [self.dv["rfRate"], self.dv["beta"], self.sd["mktReturn"], "=(C14-C12)*C13+C12"], numberFormat="a")
        
         self.writeToRange(ws, "B17", "C17", ["WACC", ""], "head")
-        self.writeToRange(ws, "B18", "B21", ["D", "E", "w_E", "w_D"])
+        self.writeToRange(ws, "B18", "B21", ["D", "E", "w_D", "w_E"])
         self.writeToRange(ws, "C18", "C21", ["=(C4+C5)", self.dv["mktCap"], "=IFERROR(C18/(C18+C19),0)", "=1-C20"], numberFormat="a")
         self.writeToRange(ws, "B22", "C22", ["WACC", "=C20*(1-C9)*C6+C21*C15"], "bold", numberFormat="p")
         
@@ -70,7 +72,11 @@ class DcfSheetsHandler(ExcelHandler):
         self.cellFormatNumber(ws, "F4", "p")
         self.setCellStyle(ws, "F5", "bold")
         self.cellFormatNumber(ws, "C7", "a")
-        
+    
+        if(DriverHandler.valuesNotFound):
+            self.writeToCell(ws, "B10", "VALUES NOT FOUND", "bold")
+            self.writeToRange(ws, "B11", f"B{len(DriverHandler.valuesNotFound)+11-1}", DriverHandler.valuesNotFound, rangeNamedStyle="bad")
+            
     def handleExcel(self):
         self.__wacc()
         self.__projectedCashFlows()

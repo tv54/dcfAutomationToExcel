@@ -11,6 +11,8 @@ from src.packages.othersrc.genFunc import displayLine, handleError
 
 class DriverHandler():
     
+    valuesNotFound=[]
+    
     @staticmethod
     def openBrowser(browserCode="f"):
         browserName=""
@@ -37,11 +39,9 @@ class DriverHandler():
         if(clickExpandButton):
             clickedButton=DriverHandler.clickExpandButton(driver)
             if(not clickedButton):
-                clickedButton=DriverHandler.clickExpandButton(driver)
-                if(not clickedButton):
-                    return False
+                return False
             
-        html = driver.execute_script("return document.body.innerHTML;")
+        # html = driver.execute_script("return document.body.innerHTML;")
         return True
     
     @staticmethod
@@ -55,11 +55,7 @@ class DriverHandler():
             try:
                 button=driver.find_element(By.CLASS_NAME, value="expandPf")
             except:
-                sleep(1)
-                try:
-                    button=driver.find_element(By.CLASS_NAME, value="expandPf")
-                except:
-                    pass
+                pass
                 
         button and button.text=="Expand All" and button.click()
         try:
@@ -82,35 +78,59 @@ class DriverHandler():
     
     @staticmethod
     def getPrice(driver, sym):
-        elem=driver.find_element(by=By.XPATH, value='//*[@data-symbol="{}"][@data-test="qsp-price"]'.format(sym))   
-        innerHtml=elem.get_attribute("innerHTML")
-        return elem.text
+        try:
+            elem=driver.find_element(by=By.XPATH, value='//*[@data-symbol="{}"][@data-test="qsp-price"]'.format(sym))
+            # innerHtml=elem.get_attribute("innerHTML")
+            return elem.text
+        except:
+            DriverHandler.valuesNotFound.append("Price")
+            displayLine("ERROR: Price not found, setting value to 0")
+            return "0"
     
     @staticmethod
     def getValueFromStatement(driver, elementTitle, nthChild=3):
-        elem=DriverHandler.getElementByTitle(driver, elementTitle)
-        row=DriverHandler.loopParentsUntilFound(elem, "D(tbr)")
-        lastYearValue=row.find_element(By.CSS_SELECTOR, value=(f'div[data-test="fin-col"]:nth-child({nthChild})'))
-            
-        return lastYearValue.text
+        try:
+            elem=DriverHandler.getElementByTitle(driver, elementTitle)
+            row=DriverHandler.loopParentsUntilFound(elem, "D(tbr)")
+            lastYearValue=row.find_element(By.CSS_SELECTOR, value=(f'div[data-test="fin-col"]:nth-child({nthChild})'))
+            return lastYearValue.text
+        except:
+            return "0"
         
     @staticmethod
     def getValueFromOther(driver, elementText, nthChild=2):
-        rowTitle=driver.find_element_by_xpath(f"//*[contains(text(), '{elementText}')]")
-        # innerHtml=rowTitle.get_attribute("innerHTML")
-        row=rowTitle.find_element(By.XPATH, value="./..").find_element(By.XPATH, value="./..")
-        value=row.find_element(By.CSS_SELECTOR, value=(f"td:nth-child({nthChild})"))
-        return value.text
+        try:
+            rowTitle=driver.find_element_by_xpath(f"//*[contains(text(), '{elementText}')]")
+            # innerHtml=rowTitle.get_attribute("innerHTML")
+            row=rowTitle.find_element(By.XPATH, value="./..").find_element(By.XPATH, value="./..")
+            value=row.find_element(By.CSS_SELECTOR, value=(f"td:nth-child({nthChild})"))
+            return value.text
+        except:
+            DriverHandler.valuesNotFound.append(elementText)
+            displayLine(f"ERROR: {elementText} not found, setting value to 0")
+            return "0"
     
-    @staticmethod
-    def closeDriver(driver):
-        driver.quit()
         
     @staticmethod
     def getElementByTitle(driver, title):
-        return driver.find_element(by=By.XPATH, value='//*[@title="{}"]'.format(title))    
+        try:    
+            elem=driver.find_element(by=By.XPATH, value='//*[@title="{}"]'.format(title))    
+            return elem
+        except:
+            DriverHandler.valuesNotFound.append(title)
+            displayLine(f"ERROR: {title} not found, setting value to 0")
+            return "0"
     
     @staticmethod
     def getValueFromTreasuryRates(driver, bondSym):
-        value=driver.find_element(by=By.XPATH, value='//*[@data-symbol="{}"]'.format(bondSym))
-        return value.text
+        try:
+            value=driver.find_element(by=By.XPATH, value='//*[@data-symbol="{}"]'.format(bondSym))
+            return value.text
+        except:
+            DriverHandler.valuesNotFound.append(bondSym)
+            displayLine(f"ERROR: {bondSym} not found, setting value to 0")
+            return "0"
+
+    @staticmethod
+    def closeDriver(driver):
+        driver.quit()

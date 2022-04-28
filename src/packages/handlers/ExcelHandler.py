@@ -1,4 +1,5 @@
 from tkinter import font
+from numpy import number
 from openpyxl import Workbook
 from openpyxl.styles import NamedStyle, Font, Border, Side, Alignment, PatternFill
 from openpyxl.styles import Color, PatternFill, Font, Border
@@ -49,8 +50,14 @@ class ExcelHandler():
         self.wb.add_named_style(good)
         self.styles["good"]=good
         
-    def writeToCell(self, ws, colName, rowNum, writeVal=""):
+    def writeToCell(self, ws, colName: str, rowNum: int, writeVal=""):
         ws[f"{colName}{rowNum}"]=writeVal
+        
+    def writeToCell(self, ws, cell: str, writeVal="", namedStyle="", numberFormat=""):
+        ws[cell]=writeVal
+        if(namedStyle):
+            ws[cell].style=self.styles[namedStyle]
+            self.cellFormatNumber(ws, cell, numberFormat)
         
     def writeToRange(self, ws, fromCell, toCell, writeArr=[], rangeNamedStyle="", fontSize=0, numberFormat=""):
         cellRange=ws[fromCell:toCell]
@@ -90,10 +97,10 @@ class ExcelHandler():
             ws=self.wb.create_sheet(sheetName)
 
         self.__setSheetStyle(ws)
-
         return ws
 
     def saveWorkbook(self, wbName=""):
+        createDir("./" + cts.OUTPUT_FOLDER)
         if(not wbName):
             wbName="./" + cts.OUTPUT_FOLDER + "/" + cts.WORKBOOK_NAME
         elif(not wbName.__contains__(cts.OUTPUT_FOLDER)):
@@ -104,8 +111,6 @@ class ExcelHandler():
                 self.wb.remove("Sheet")
             except:
                 pass
-            
-        createDir("./" + cts.OUTPUT_FOLDER)
         
         try:
             displayLine("Guardando Excel {}...".format(wbName))
@@ -122,14 +127,22 @@ class ExcelHandler():
                 return self.saveWorkbook(wbName)
         handleInput(f"Excel guardado en {wbName}. Presionar una tecla para cerrar")
 
-    def cellFormatNumber(cls, ws, cell, format="A"):
+    def cellFormatNumber(self, ws, cell, format="A"):
+        """Sets cell number format to specified format
+
+        Args:
+            ws (Worksheet): Worksheet to set the cell format on 
+            cell (String): Cell coordinates
+            format (str, optional): Number format code:
+                "A": Accounting format, format specified by constant NUMBER_FORMAT_ACCOUNTING, digits specified by constant ROUND_DECIMALS
+                "P": Percentage format, digits specified by constant ROUND_DECIMALS
+        """
         match format.upper():
             case "P":
                 ws["{}".format(cell)].number_format="0.{}%".format("0" * cts.ROUND_DECIMALS)
             case "A":
                 ws["{}".format(cell)].number_format=cts.NUMBER_FORMAT_ACCOUNTING
-        return ""
-
+                
     def conditionalFormatting(self, ws, cell, cutoutNumber=0):
         ws.conditional_formatting.add(cell, CellIsRule(operator='lessThanOrEqual', formula=[f"{cutoutNumber}"], font=Font(name='Calibri',size=11,bold=True,color='9C0006'), fill=PatternFill("solid", start_color='FFC7CE', end_color='FFC7CE')))    
         ws.conditional_formatting.add(cell, CellIsRule(operator='greaterThan', formula=[f"{cutoutNumber}"], font=Font(name='Calibri',size=11,bold=True,color='006100'), fill=PatternFill("solid", start_color='C6EFCE', end_color='C6EFCE')))
