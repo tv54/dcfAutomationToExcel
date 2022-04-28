@@ -1,6 +1,5 @@
 from os import system
-from src.packages.othersrc.genFunc import exitProgram, handleInput, displayLine, exitProgram, percetageStrToFloatStr
-
+from src.packages.othersrc.genFunc import handleInput, displayLine, percetageStrToFloatStr
 
 def __printListWithInput(listDescriptor, selectionList, listItemPrefix="", lastItemNoPrefix=True):
     userIn = 0

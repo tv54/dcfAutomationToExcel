@@ -1,10 +1,7 @@
-from tkinter import font
-from numpy import number
 from openpyxl import Workbook
-from openpyxl.styles import NamedStyle, Font, Border, Side, Alignment, PatternFill
-from openpyxl.styles import Color, PatternFill, Font, Border
-from openpyxl.styles.differential import DifferentialStyle
-from openpyxl.formatting.rule import ColorScaleRule, CellIsRule, FormulaRule
+from openpyxl.styles import NamedStyle, Font, Border, Side, PatternFill
+from openpyxl.styles import PatternFill, Font, Border
+from openpyxl.formatting.rule import CellIsRule
 import src.packages.othersrc.constants as cts
 from src.packages.othersrc.genFunc import checkKeyInDict, createDir, handleError, handleInput, displayLine
 

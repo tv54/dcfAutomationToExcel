@@ -1,5 +1,3 @@
-import os
-from time import sleep
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.firefox.service import Service as frfxService
@@ -7,6 +5,7 @@ from selenium.webdriver.chrome.service import Service as chrmService
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.chrome import ChromeDriverManager
 from time import sleep
+import src.packages.othersrc.constants as cts
 from src.packages.othersrc.genFunc import displayLine, handleError
 
 class DriverHandler():
@@ -20,12 +19,12 @@ class DriverHandler():
             if(browserCode=="f"):
                 browserName="Firefox"
                 displayLine(f"Abriendo navegador {browserName}...")
-                service=frfxService(executable_path=GeckoDriverManager(path="./drivers", log_level=0, print_first_line=False).install(), log_path=os.devnull)
+                service=frfxService(executable_path=GeckoDriverManager(path="./drivers", log_level=0, print_first_line=False).install(), log_path='/dev/null')
                 driver = webdriver.Firefox(service=service)
             elif(browserCode=="c"):
                 browserName="Chrome"
                 displayLine(f"Abriendo navegador {browserName}...")
-                service=chrmService(executable_path=ChromeDriverManager(path="./drivers", log_level=0, print_first_line=False).install(), log_path=os.devnull)
+                service=chrmService(executable_path=ChromeDriverManager(path="./drivers", log_level=0, print_first_line=False).install(), log_path='/dev/null')
                 driver = webdriver.Chrome(service=service)
         except:
             handleError("No se pudo inicializar el driver {}".format(browserName))
@@ -47,11 +46,11 @@ class DriverHandler():
     @staticmethod
     def clickExpandButton(driver):
         button=""
-        sleep(0.5)
+        sleep(cts.SLEEP_SECONDS_BETWEEN_PETITIONS)
         try:
             button=driver.find_element(By.CLASS_NAME, value="expandPf")
         except:
-            sleep(1)
+            sleep(cts.SLEEP_SECONDS_BETWEEN_PETITIONS)
             try:
                 button=driver.find_element(By.CLASS_NAME, value="expandPf")
             except:

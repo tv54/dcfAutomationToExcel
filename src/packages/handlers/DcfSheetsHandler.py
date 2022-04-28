@@ -1,5 +1,4 @@
 from datetime import datetime
-from lib2to3.pgen2.driver import Driver
 from src.packages.handlers.DriverHandler import DriverHandler
 from src.packages.handlers.ExcelHandler import ExcelHandler
 from openpyxl.worksheet.dimensions import SheetFormatProperties, ColumnDimension

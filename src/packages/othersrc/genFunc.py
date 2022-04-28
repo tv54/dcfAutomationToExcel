@@ -1,9 +1,6 @@
 from os import makedirs
 from sys import exit
 
-from numpy import number
-import src.packages.othersrc.constants as cts
-
 def handleError(error):
     formattedLine="Error received '{}'. Continue? (y,n): ".format(error)
     userIn=handleInput(formattedLine)
