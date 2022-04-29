@@ -23,7 +23,7 @@ class DcfSheetsHandler(ExcelHandler):
         self.writeToRange(ws, "B7", "H7", ["Año", datetime.now().year-1, "=C7+1", "=D7+1", "=E7+1", "=F7+1", "=G7+1"], rangeNamedStyle="head")
         self.writeToRange(ws, "B8", "H8", ["FCF", self.dv["fcf"], "=C8*(1+$C$3)", "=D8*(1+$C$3)", "=E8*(1+$C$3)", "=F8*(1+$C$3)", "=G8*(1+$C$3)"], numberFormat="a") 
         self.writeToRange(ws, "B9", "H9", ["Valor terminal", "", "", "", "", "", "=H8*(1+$C$4)/($C$5-$C$4)"], numberFormat="a")
-        self.writeToRange(ws, "B10", "H10", ["Total", "", "=SUM(D8:D9)", "=SUM(E8:E9)", "=SUM(F8:G9)", "=SUM(G8:G9)", "=SUM(H8:H9)"], rangeNamedStyle="total")
+        self.writeToRange(ws, "B10", "H10", ["Total", "", "=SUM(D8:D9)", "=SUM(E8:E9)", "=SUM(F8:F9)", "=SUM(G8:G9)", "=SUM(H8:H9)"], rangeNamedStyle="total")
         
         self.writeToRange(ws, "B12", "C12", ["VPN de los FCF proy.", "=NPV(C5,D10:H10)"], rangeNamedStyle="bold")
         
