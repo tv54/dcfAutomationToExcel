@@ -11,7 +11,7 @@ class DcfSheetsHandler(ExcelHandler):
         self.dv=dataValues
         
     def __projectedCashFlows(self):
-        ws=self.createSheet("CF proyectados", 1)
+        ws=self.createSheet("CF proyectados", 0)
         ws.sheet_format=SheetFormatProperties(defaultColWidth=24.43)
         ws.column_dimensions["A"]=ColumnDimension(ws, width=3)
         
